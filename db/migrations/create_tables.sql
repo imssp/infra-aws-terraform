@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS hotel_bookings (
     checkout_date DATE NOT NULL,
     amount NUMERIC(12, 2) NOT NULL,
     status VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS booking_events (
@@ -17,8 +17,16 @@ CREATE TABLE IF NOT EXISTS booking_events (
     booking_id UUID NOT NULL,
     event_type VARCHAR(100) NOT NULL,
     payload JSONB,
-    created_at TIMESTAMP NOT NULL
+    created_at TIMESTAMP NOT NULL,
     CONSTRAINT real_booking_events
         FOREIGN KEY (booking_id)
         REFERENCES hotel_bookings(id) ON DELETE CASCADE
 );
+
+
+CREATE INDEX IF NOT EXISTS indexof_hotelbookings_covering_city_createdat_orgid_status
+    ON hotel_bookings (city, created_at DESC, org_id, status)
+    INCLUDE (amount);
+
+CREATE INDEX IF NOT EXISTS indexof_bookingevents_covering_bookingid_createdat
+    ON booking_events (booking_id, created_at DESC);
