@@ -1,11 +1,11 @@
-aws_region   = "us-east-1"
+aws_region   = "ap-south-1"
 project_name = "hotel-platform"
 environment  = "prod"
 
 vpc_cidr = "10.20.0.0/16"
 availability_zones = [
-  "us-east-1a",
-  "us-east-1b"
+  "ap-south-1a",
+  "ap-south-1b"
 ]
 public_subnet_cidrs = [
   "10.20.0.0/24",
