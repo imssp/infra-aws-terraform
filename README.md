@@ -1,3 +1,74 @@
+## Submitted by
+
+**Name:** Satya Sourav Patel  
+**Email:** satyasouravssp0@gmail.com
+
+---
+
+## Repository Layout
+
+```text
+infra/
+  modules/
+    network/    # VPC, public/private subnets, routes, NAT
+    ecs/        # ALB, ECS cluster, task definition, service, security groups
+    rds/        # private PostgreSQL RDS, subnet group, security group
+  envs/
+    dev/        # smaller sizing, short retention, deletion protection off
+    prod/       # larger sizing, Multi-AZ, longer retention, deletion protection on
+db/
+  migrations/   # table and index creation
+  seeds/        # deterministic 120 booking seed
+  queries/      # optimized report query with EXPLAIN
+scripts/
+  migrate.sh
+  query-demo.sh
+  backup.sh
+  restore.sh
+```
+
+## Terraform Review
+
+The environment directories use local backend state by default so the assessment commands can run without creating an S3 state bucket.
+
+The AWS provider is configured with mock credentials and provider validation skips so `terraform plan -refresh=false` can run as a design review without deploying or contacting AWS APIs for account validation.
+
+Run the review commands from the repository root:
+
+```bash
+terraform fmt -check -recursive infra
+
+cd infra/envs/dev
+terraform init
+terraform validate
+terraform plan -refresh=false
+
+cd ../prod
+terraform init
+terraform validate
+terraform plan -refresh=false
+```
+
+Environment differences are defined in:
+
+- `infra/envs/dev/terraform.tfvars`
+- `infra/envs/prod/terraform.tfvars`
+
+Key differences:
+
+| Setting | dev | prod |
+| --- | --- | --- |
+| ECS desired count | 1 | 2 |
+| Fargate CPU/memory | 256 / 512 MB | 512 / 1024 MB |
+| RDS class | db.t4g.micro | db.t4g.small |
+| RDS Multi-AZ | false | true |
+| RDS backup retention | 3 days | 14 days |
+| RDS deletion protection | false | true |
+| Final snapshot on delete | skipped | required |
+
+---
+
+
 ## Local Database Setup
 
 Start PostgreSQL:
@@ -102,3 +173,13 @@ Remove the local database volume:
 ```bash
 docker compose down -v
 ```
+## GitHub Actions
+
+The workflow at `.github/workflows/terraform-plan.yml` runs on pull requests that change Terraform files. It performs:
+
+- `terraform fmt -check`
+- `terraform init`
+- `terraform validate`
+- `terraform plan -refresh=false`
+
+It writes the human-readable plan to the workflow summary and uploads `plan.txt` as an artifact for each environment.

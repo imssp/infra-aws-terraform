@@ -1,0 +1,1176 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # module.ecs.aws_cloudwatch_log_group.app will be created
+  + resource "aws_cloudwatch_log_group" "app" {
+      + arn               = (known after apply)
+      + id                = (known after apply)
+      + log_group_class   = (known after apply)
+      + name              = "/ecs/hotel-platform-dev"
+      + name_prefix       = (known after apply)
+      + retention_in_days = 7
+      + skip_destroy      = false
+      + tags              = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-logs"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all          = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-logs"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+    }
+
+  # module.ecs.aws_ecs_cluster.this will be created
+  + resource "aws_ecs_cluster" "this" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + name     = "hotel-platform-dev-cluster"
+      + tags     = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-cluster"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-cluster"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+
+      + setting {
+          + name  = "containerInsights"
+          + value = "disabled"
+        }
+    }
+
+  # module.ecs.aws_ecs_service.app will be created
+  + resource "aws_ecs_service" "app" {
+      + availability_zone_rebalancing      = "DISABLED"
+      + cluster                            = (known after apply)
+      + deployment_maximum_percent         = 200
+      + deployment_minimum_healthy_percent = 50
+      + desired_count                      = 1
+      + enable_ecs_managed_tags            = false
+      + enable_execute_command             = false
+      + iam_role                           = (known after apply)
+      + id                                 = (known after apply)
+      + launch_type                        = "FARGATE"
+      + name                               = "hotel-platform-dev-service"
+      + platform_version                   = (known after apply)
+      + scheduling_strategy                = "REPLICA"
+      + tags                               = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-service"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all                           = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-service"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + task_definition                    = (known after apply)
+      + triggers                           = (known after apply)
+      + wait_for_steady_state              = false
+
+      + load_balancer {
+          + container_name   = "hotel-platform-dev-app"
+          + container_port   = 80
+          + target_group_arn = (known after apply)
+            # (1 unchanged attribute hidden)
+        }
+
+      + network_configuration {
+          + assign_public_ip = false
+          + security_groups  = (known after apply)
+          + subnets          = (known after apply)
+        }
+    }
+
+  # module.ecs.aws_ecs_task_definition.app will be created
+  + resource "aws_ecs_task_definition" "app" {
+      + arn                      = (known after apply)
+      + arn_without_revision     = (known after apply)
+      + container_definitions    = jsonencode(
+            [
+              + {
+                  + environment      = []
+                  + essential        = true
+                  + image            = "nginx:1.27-alpine"
+                  + logConfiguration = {
+                      + logDriver = "awslogs"
+                      + options   = {
+                          + awslogs-group         = "/ecs/hotel-platform-dev"
+                          + awslogs-region        = "ap-south-1"
+                          + awslogs-stream-prefix = "app"
+                        }
+                    }
+                  + name             = "hotel-platform-dev-app"
+                  + portMappings     = [
+                      + {
+                          + containerPort = 80
+                          + hostPort      = 80
+                          + protocol      = "tcp"
+                        },
+                    ]
+                },
+            ]
+        )
+      + cpu                      = "256"
+      + enable_fault_injection   = (known after apply)
+      + execution_role_arn       = (known after apply)
+      + family                   = "hotel-platform-dev-task"
+      + id                       = (known after apply)
+      + memory                   = "512"
+      + network_mode             = "awsvpc"
+      + requires_compatibilities = [
+          + "FARGATE",
+        ]
+      + revision                 = (known after apply)
+      + skip_destroy             = false
+      + tags                     = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-task"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all                 = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-task"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + track_latest             = false
+    }
+
+  # module.ecs.aws_iam_role.task_execution will be created
+  + resource "aws_iam_role" "task_execution" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "ecs-tasks.amazonaws.com"
+                        }
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "hotel-platform-dev-task-execution-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags                  = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-task-execution-role"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all              = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-task-execution-role"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.ecs.aws_iam_role_policy_attachment.execution will be created
+  + resource "aws_iam_role_policy_attachment" "execution" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+      + role       = "hotel-platform-dev-task-execution-role"
+    }
+
+  # module.ecs.aws_lb.this will be created
+  + resource "aws_lb" "this" {
+      + arn                                                          = (known after apply)
+      + arn_suffix                                                   = (known after apply)
+      + client_keep_alive                                            = 3600
+      + desync_mitigation_mode                                       = "defensive"
+      + dns_name                                                     = (known after apply)
+      + drop_invalid_header_fields                                   = false
+      + enable_deletion_protection                                   = false
+      + enable_http2                                                 = true
+      + enable_tls_version_and_cipher_suite_headers                  = false
+      + enable_waf_fail_open                                         = false
+      + enable_xff_client_port                                       = false
+      + enable_zonal_shift                                           = false
+      + enforce_security_group_inbound_rules_on_private_link_traffic = (known after apply)
+      + id                                                           = (known after apply)
+      + idle_timeout                                                 = 60
+      + internal                                                     = false
+      + ip_address_type                                              = (known after apply)
+      + load_balancer_type                                           = "application"
+      + name                                                         = "hotel-platform-dev-alb"
+      + name_prefix                                                  = (known after apply)
+      + preserve_host_header                                         = false
+      + security_groups                                              = (known after apply)
+      + subnets                                                      = (known after apply)
+      + tags                                                         = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-alb"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all                                                     = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-alb"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + vpc_id                                                       = (known after apply)
+      + xff_header_processing_mode                                   = "append"
+      + zone_id                                                      = (known after apply)
+
+      + subnet_mapping (known after apply)
+    }
+
+  # module.ecs.aws_lb_listener.http will be created
+  + resource "aws_lb_listener" "http" {
+      + arn                                                                   = (known after apply)
+      + id                                                                    = (known after apply)
+      + load_balancer_arn                                                     = (known after apply)
+      + port                                                                  = 80
+      + protocol                                                              = "HTTP"
+      + routing_http_request_x_amzn_mtls_clientcert_header_name               = (known after apply)
+      + routing_http_request_x_amzn_mtls_clientcert_issuer_header_name        = (known after apply)
+      + routing_http_request_x_amzn_mtls_clientcert_leaf_header_name          = (known after apply)
+      + routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name = (known after apply)
+      + routing_http_request_x_amzn_mtls_clientcert_subject_header_name       = (known after apply)
+      + routing_http_request_x_amzn_mtls_clientcert_validity_header_name      = (known after apply)
+      + routing_http_request_x_amzn_tls_cipher_suite_header_name              = (known after apply)
+      + routing_http_request_x_amzn_tls_version_header_name                   = (known after apply)
+      + routing_http_response_access_control_allow_credentials_header_value   = (known after apply)
+      + routing_http_response_access_control_allow_headers_header_value       = (known after apply)
+      + routing_http_response_access_control_allow_methods_header_value       = (known after apply)
+      + routing_http_response_access_control_allow_origin_header_value        = (known after apply)
+      + routing_http_response_access_control_expose_headers_header_value      = (known after apply)
+      + routing_http_response_access_control_max_age_header_value             = (known after apply)
+      + routing_http_response_content_security_policy_header_value            = (known after apply)
+      + routing_http_response_server_enabled                                  = (known after apply)
+      + routing_http_response_strict_transport_security_header_value          = (known after apply)
+      + routing_http_response_x_content_type_options_header_value             = (known after apply)
+      + routing_http_response_x_frame_options_header_value                    = (known after apply)
+      + ssl_policy                                                            = (known after apply)
+      + tags_all                                                              = (known after apply)
+      + tcp_idle_timeout_seconds                                              = (known after apply)
+
+      + default_action {
+          + order            = (known after apply)
+          + target_group_arn = (known after apply)
+          + type             = "forward"
+        }
+
+      + mutual_authentication (known after apply)
+    }
+
+  # module.ecs.aws_lb_target_group.app will be created
+  + resource "aws_lb_target_group" "app" {
+      + arn                                = (known after apply)
+      + arn_suffix                         = (known after apply)
+      + connection_termination             = (known after apply)
+      + deregistration_delay               = "300"
+      + id                                 = (known after apply)
+      + ip_address_type                    = (known after apply)
+      + lambda_multi_value_headers_enabled = false
+      + load_balancer_arns                 = (known after apply)
+      + load_balancing_algorithm_type      = (known after apply)
+      + load_balancing_anomaly_mitigation  = (known after apply)
+      + load_balancing_cross_zone_enabled  = (known after apply)
+      + name                               = "hotel-platform-dev-tg"
+      + name_prefix                        = (known after apply)
+      + port                               = 80
+      + preserve_client_ip                 = (known after apply)
+      + protocol                           = "HTTP"
+      + protocol_version                   = (known after apply)
+      + proxy_protocol_v2                  = false
+      + slow_start                         = 0
+      + tags                               = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-tg"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all                           = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-tg"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + target_type                        = "ip"
+      + vpc_id                             = (known after apply)
+
+      + health_check {
+          + enabled             = true
+          + healthy_threshold   = 2
+          + interval            = 30
+          + matcher             = "200-399"
+          + path                = "/"
+          + port                = "traffic-port"
+          + protocol            = "HTTP"
+          + timeout             = 5
+          + unhealthy_threshold = 3
+        }
+
+      + stickiness (known after apply)
+
+      + target_failover (known after apply)
+
+      + target_group_health (known after apply)
+
+      + target_health_state (known after apply)
+    }
+
+  # module.ecs.aws_security_group.alb will be created
+  + resource "aws_security_group" "alb" {
+      + arn                    = (known after apply)
+      + description            = "Allow public HTTP traffic to the application load balancer."
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = "Outbound to ECS targets"
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = "Public HTTP"
+              + from_port        = 80
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 80
+            },
+        ]
+      + name                   = "hotel-platform-dev-alb-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-alb-sg"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all               = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-alb-sg"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.ecs.aws_security_group.ecs will be created
+  + resource "aws_security_group" "ecs" {
+      + arn                    = (known after apply)
+      + description            = "Allow traffic from the ALB to Fargate tasks."
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = "Outbound to database and image registries"
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = []
+              + description      = "ALB to application"
+              + from_port        = 80
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = (known after apply)
+              + self             = false
+              + to_port          = 80
+            },
+        ]
+      + name                   = "hotel-platform-dev-ecs-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-ecs-sg"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all               = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "ecs"
+          + "Name"        = "hotel-platform-dev-ecs-sg"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.network.aws_eip.nat[0] will be created
+  + resource "aws_eip" "nat" {
+      + allocation_id        = (known after apply)
+      + arn                  = (known after apply)
+      + association_id       = (known after apply)
+      + carrier_ip           = (known after apply)
+      + customer_owned_ip    = (known after apply)
+      + domain               = "vpc"
+      + id                   = (known after apply)
+      + instance             = (known after apply)
+      + ipam_pool_id         = (known after apply)
+      + network_border_group = (known after apply)
+      + network_interface    = (known after apply)
+      + private_dns          = (known after apply)
+      + private_ip           = (known after apply)
+      + ptr_record           = (known after apply)
+      + public_dns           = (known after apply)
+      + public_ip            = (known after apply)
+      + public_ipv4_pool     = (known after apply)
+      + tags                 = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-nat-eip"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all             = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-nat-eip"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + vpc                  = (known after apply)
+    }
+
+  # module.network.aws_internet_gateway.this will be created
+  + resource "aws_internet_gateway" "this" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + owner_id = (known after apply)
+      + tags     = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-igw"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-igw"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + vpc_id   = (known after apply)
+    }
+
+  # module.network.aws_nat_gateway.this[0] will be created
+  + resource "aws_nat_gateway" "this" {
+      + allocation_id                      = (known after apply)
+      + association_id                     = (known after apply)
+      + connectivity_type                  = "public"
+      + id                                 = (known after apply)
+      + network_interface_id               = (known after apply)
+      + private_ip                         = (known after apply)
+      + public_ip                          = (known after apply)
+      + secondary_private_ip_address_count = (known after apply)
+      + secondary_private_ip_addresses     = (known after apply)
+      + subnet_id                          = (known after apply)
+      + tags                               = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-nat"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all                           = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-nat"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+    }
+
+  # module.network.aws_route.private_nat[0] will be created
+  + resource "aws_route" "private_nat" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + nat_gateway_id         = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = (known after apply)
+      + state                  = (known after apply)
+    }
+
+  # module.network.aws_route.public_internet will be created
+  + resource "aws_route" "public_internet" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + gateway_id             = (known after apply)
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = (known after apply)
+      + state                  = (known after apply)
+    }
+
+  # module.network.aws_route_table.private will be created
+  + resource "aws_route_table" "private" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = (known after apply)
+      + tags             = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-private-rt"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all         = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-private-rt"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.network.aws_route_table.public will be created
+  + resource "aws_route_table" "public" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = (known after apply)
+      + tags             = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-public-rt"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all         = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-public-rt"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.network.aws_route_table_association.private["0"] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.network.aws_route_table_association.private["1"] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.network.aws_route_table_association.public["0"] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.network.aws_route_table_association.public["1"] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.network.aws_subnet.private["0"] will be created
+  + resource "aws_subnet" "private" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ap-south-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.10.10.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-private-1"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+          + "Tier"        = "private"
+        }
+      + tags_all                                       = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-private-1"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+          + "Tier"        = "private"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.network.aws_subnet.private["1"] will be created
+  + resource "aws_subnet" "private" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ap-south-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.10.11.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-private-2"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+          + "Tier"        = "private"
+        }
+      + tags_all                                       = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-private-2"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+          + "Tier"        = "private"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.network.aws_subnet.public["0"] will be created
+  + resource "aws_subnet" "public" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ap-south-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.10.0.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = true
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-public-1"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+          + "Tier"        = "public"
+        }
+      + tags_all                                       = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-public-1"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+          + "Tier"        = "public"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.network.aws_subnet.public["1"] will be created
+  + resource "aws_subnet" "public" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ap-south-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.10.1.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = true
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-public-2"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+          + "Tier"        = "public"
+        }
+      + tags_all                                       = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-public-2"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+          + "Tier"        = "public"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.network.aws_vpc.this will be created
+  + resource "aws_vpc" "this" {
+      + arn                                  = (known after apply)
+      + cidr_block                           = "10.10.0.0/16"
+      + default_network_acl_id               = (known after apply)
+      + default_route_table_id               = (known after apply)
+      + default_security_group_id            = (known after apply)
+      + dhcp_options_id                      = (known after apply)
+      + enable_dns_hostnames                 = true
+      + enable_dns_support                   = true
+      + enable_network_address_usage_metrics = (known after apply)
+      + id                                   = (known after apply)
+      + instance_tenancy                     = "default"
+      + ipv6_association_id                  = (known after apply)
+      + ipv6_cidr_block                      = (known after apply)
+      + ipv6_cidr_block_network_border_group = (known after apply)
+      + main_route_table_id                  = (known after apply)
+      + owner_id                             = (known after apply)
+      + tags                                 = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-vpc"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all                             = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "network"
+          + "Name"        = "hotel-platform-dev-vpc"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+    }
+
+  # module.rds.aws_db_instance.this will be created
+  + resource "aws_db_instance" "this" {
+      + address                               = (known after apply)
+      + allocated_storage                     = 20
+      + apply_immediately                     = true
+      + arn                                   = (known after apply)
+      + auto_minor_version_upgrade            = true
+      + availability_zone                     = (known after apply)
+      + backup_retention_period               = 3
+      + backup_target                         = (known after apply)
+      + backup_window                         = "03:00-04:00"
+      + ca_cert_identifier                    = (known after apply)
+      + character_set_name                    = (known after apply)
+      + copy_tags_to_snapshot                 = true
+      + database_insights_mode                = (known after apply)
+      + db_name                               = "hotelbookings"
+      + db_subnet_group_name                  = "hotel-platform-dev-db-subnets"
+      + dedicated_log_volume                  = false
+      + delete_automated_backups              = true
+      + deletion_protection                   = false
+      + domain_fqdn                           = (known after apply)
+      + endpoint                              = (known after apply)
+      + engine                                = "postgres"
+      + engine_lifecycle_support              = (known after apply)
+      + engine_version                        = "16.3"
+      + engine_version_actual                 = (known after apply)
+      + hosted_zone_id                        = (known after apply)
+      + id                                    = (known after apply)
+      + identifier                            = "hotel-platform-dev-postgres"
+      + identifier_prefix                     = (known after apply)
+      + instance_class                        = "db.t4g.micro"
+      + iops                                  = (known after apply)
+      + kms_key_id                            = (known after apply)
+      + latest_restorable_time                = (known after apply)
+      + license_model                         = (known after apply)
+      + listener_endpoint                     = (known after apply)
+      + maintenance_window                    = "sun:04:00-sun:05:00"
+      + master_user_secret                    = (known after apply)
+      + master_user_secret_kms_key_id         = (known after apply)
+      + max_allocated_storage                 = 50
+      + monitoring_interval                   = 0
+      + monitoring_role_arn                   = (known after apply)
+      + multi_az                              = false
+      + nchar_character_set_name              = (known after apply)
+      + network_type                          = (known after apply)
+      + option_group_name                     = (known after apply)
+      + parameter_group_name                  = (known after apply)
+      + password                              = (sensitive value)
+      + password_wo                           = (write-only attribute)
+      + performance_insights_enabled          = false
+      + performance_insights_kms_key_id       = (known after apply)
+      + performance_insights_retention_period = (known after apply)
+      + port                                  = 5432
+      + publicly_accessible                   = false
+      + replica_mode                          = (known after apply)
+      + replicas                              = (known after apply)
+      + resource_id                           = (known after apply)
+      + skip_final_snapshot                   = true
+      + snapshot_identifier                   = (known after apply)
+      + status                                = (known after apply)
+      + storage_encrypted                     = true
+      + storage_throughput                    = (known after apply)
+      + storage_type                          = (known after apply)
+      + tags                                  = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "rds"
+          + "Name"        = "hotel-platform-dev-postgres"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all                              = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "rds"
+          + "Name"        = "hotel-platform-dev-postgres"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + timezone                              = (known after apply)
+      + username                              = "hotel_admin"
+      + vpc_security_group_ids                = (known after apply)
+    }
+
+  # module.rds.aws_db_subnet_group.this will be created
+  + resource "aws_db_subnet_group" "this" {
+      + arn                     = (known after apply)
+      + description             = "Managed by Terraform"
+      + id                      = (known after apply)
+      + name                    = "hotel-platform-dev-db-subnets"
+      + name_prefix             = (known after apply)
+      + subnet_ids              = (known after apply)
+      + supported_network_types = (known after apply)
+      + tags                    = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "rds"
+          + "Name"        = "hotel-platform-dev-db-subnets"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all                = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "rds"
+          + "Name"        = "hotel-platform-dev-db-subnets"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + vpc_id                  = (known after apply)
+    }
+
+  # module.rds.aws_security_group.rds will be created
+  + resource "aws_security_group" "rds" {
+      + arn                    = (known after apply)
+      + description            = "Allow PostgreSQL traffic only from Fargate tasks."
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = "Outbound responses"
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = []
+              + description      = "PostgreSQL from ECS"
+              + from_port        = 5432
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = (known after apply)
+              + self             = false
+              + to_port          = 5432
+            },
+        ]
+      + name                   = "hotel-platform-dev-rds-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "rds"
+          + "Name"        = "hotel-platform-dev-rds-sg"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + tags_all               = {
+          + "Application" = "hotel-bookings"
+          + "CostCenter"  = "assessment"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "terraform"
+          + "Module"      = "rds"
+          + "Name"        = "hotel-platform-dev-rds-sg"
+          + "Owner"       = "platform"
+          + "Project"     = "hotel-platform"
+          + "Region"      = "ap-south-1"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+Plan: 30 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + alb_dns_name          = (known after apply)
+  + ecs_cluster_name      = "hotel-platform-dev-cluster"
+  + ecs_service_name      = "hotel-platform-dev-service"
+  + rds_endpoint          = (known after apply)
+  + rds_security_group_id = (known after apply)

@@ -1,0 +1,95 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    paths:
+      - "infra/**"
+      - ".github/workflows/terraform-plan.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: terraform-${{ matrix.environment }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        environment:
+          - dev
+          - prod
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: infra/envs/${{ matrix.environment }}
+
+    env:
+      TF_IN_AUTOMATION: true
+      TF_INPUT: false
+
+
+      AWS_ACCESS_KEY_ID: mock_access_key
+      AWS_SECRET_ACCESS_KEY: mock_secret_key
+      AWS_DEFAULT_REGION: ap-south-1
+      AWS_EC2_METADATA_DISABLED: "true"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive ../..
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        run: terraform validate -no-color
+
+      - name: Terraform plan
+        run: |
+          PLAN_ARGS="-refresh=false -input=false -no-color -out=tfplan"
+
+          if [ -f "${{ matrix.environment }}.tfvars" ]; then
+            PLAN_ARGS="$PLAN_ARGS -var-file=${{ matrix.environment }}.tfvars"
+          elif [ -f "terraform.tfvars" ]; then
+            PLAN_ARGS="$PLAN_ARGS -var-file=terraform.tfvars"
+          fi
+
+          terraform plan $PLAN_ARGS
+
+      - name: Render plan
+        run: terraform show -no-color tfplan > plan.txt
+
+      - name: Add plan to job summary
+        run: |
+          {
+            echo "## Terraform plan: ${{ matrix.environment }}"
+            echo
+            echo "This is a plan-only workflow. No AWS resources are deployed."
+            echo
+            echo "Full plan is uploaded as a workflow artifact."
+            echo
+            echo "### First 200 lines of Terraform plan"
+            echo
+            echo '```terraform'
+            sed -n '1,200p' plan.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-${{ matrix.environment }}
+          path: |
+            infra/envs/${{ matrix.environment }}/tfplan
+            infra/envs/${{ matrix.environment }}/plan.txt
+          retention-days: 7
